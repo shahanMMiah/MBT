@@ -4,21 +4,21 @@
 #include <rectangle.h>
 #include <vector2d.h>
 #include <object.h> 
+#include <color.h>
 
 class GameWindow;
-class Wall : Object
+class Wall : public Object
 {
     public:
     Wall();
     Wall(Vec2D pos, int width, int height);
+    Wall(Vec2D pos, int width, int height, Vec2D direction);
 
     virtual void draw(GameWindow &window) override;
-
-    inline Rectangle &getBoundingBox(){return mBoundingBox;}
+    void draw(GameWindow &window,Color col);
     
-    private:
-    Vec2D mPos;
-    Rectangle mBoundingBox;
+    
+ 
 
     
 

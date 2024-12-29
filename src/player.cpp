@@ -87,10 +87,7 @@ void Player::update()
     for(size_t iter=0; iter < sizeof(mStates)/sizeof(mStates[0]); iter ++)
     {
         mStates[iter] = false;
-
     }
-
-
 
 }
 

@@ -9,7 +9,7 @@ Needle::Needle()
     mPos = Vec2D::Zero;
     mWidth = 0;
     mHeight = 0;
-    mSpeed = DEFAULT_NEEDLE_SPEED;
+    mSpeed = DEFAULT_NEEDLE_SPEED*-1;
     mDirection = Vec2D(0,mSpeed);
     mBoundingBox = Rectangle(Vec2D::Zero, Vec2D::Zero); 
     mStringBoundingBox = Rectangle(Vec2D::Zero, Vec2D::Zero);
@@ -24,7 +24,7 @@ Needle::Needle(Vec2D pos, int width, int height)
     mWidth = width;
     mHeight = height;
 
-    mSpeed = DEFAULT_NEEDLE_SPEED;
+    mSpeed = DEFAULT_NEEDLE_SPEED*-1;
     mDirection = Vec2D(0,mSpeed);
     mBoundingBox = Rectangle(mPos, mWidth, mHeight);
     mStringBoundingBox = Rectangle(mPos, mWidth, mHeight);

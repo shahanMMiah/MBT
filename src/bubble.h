@@ -19,6 +19,7 @@ class Bubble
         
         void moveDir(controlStates_t dir);
         void update();
+        void checkBounce(Rectangle &boundingBox);
         
         inline Rectangle &getBoundingBox(){return mBoundingBox;}
         inline Vec2D getPos(){return mPos;}
@@ -47,7 +48,7 @@ class Bubble
         float mSideDir = DEFAULT_BUBBLE_SIDE;
         bool mPopped = false;
         int mSize = 3;
-        nlohmann::json mSizeData = {{"1", 10},{"2", 30},{"3", 50},{"4", 80}};
+        nlohmann::json mSizeData = {{"1", 20},{"2", 40},{"3", 60},{"4", 80}};
 
 
         

@@ -79,9 +79,81 @@ void Bubble:: draw(GameWindow &window)
 void Bubble::update()
 {
 	mDirection += Vec2D(0, (mFallRate * TIMESTEP)*TIMESTEP);	
+
 	move();
 }
 
 void Bubble:: moveDir(controlStates_t dir)
 {}
-       
+
+void Bubble::checkBounce(Rectangle &boundingBox)
+{
+	if(getBoundingBox().intersects(boundingBox))
+			{
+				std::vector<Line2D> lines = {
+					Line2D(boundingBox.getTopLeft(),boundingBox.getTopRight()),
+					Line2D(boundingBox.getTopLeft(),boundingBox.getBottomLeft()),
+					Line2D(boundingBox.getTopRight(),boundingBox.getBottomRight()),
+					Line2D(boundingBox.getBottomLeft(),boundingBox.getBottomRight()),
+				};
+
+				float distance = 0.0f;
+				size_t line_iter; 
+
+				for(size_t iter=0; iter < lines.size();iter++)
+				{
+					float dist = lines[iter].closestPoint(
+						getBoundingBox().getCenterPoint()).distance(getBoundingBox().getCenterPoint());
+					
+					if(dist < distance || distance == 0.0f)
+					{
+						distance = dist;
+						line_iter = iter;
+					}
+
+				}
+				
+				Vec2D normal_vec;
+				switch (line_iter)
+				{
+				case TOPSIDE:
+					setMove(
+						lines[0].closestPoint(
+							getBoundingBox().getBottomLeft()
+						)+Vec2D(0,getBoundingBox().getHeight()*-1));
+					normal_vec = Vec2D(0,1);
+					break;
+
+				case LEFTSIDE:
+					setMove(
+						lines[1].closestPoint(
+							getBoundingBox().getTopLeft()
+						)+Vec2D(getBoundingBox().getWidth()*-1, 0));
+					normal_vec = Vec2D(-1,0);
+					break;
+					
+				case RIGHTSIDE:
+					setMove(
+						lines[2].closestPoint(
+							getBoundingBox().getTopRight()
+						));
+					normal_vec = Vec2D(1,0);
+					break;
+					
+				case BOTTOMSIDE:
+					setMove(
+						lines[3].closestPoint(
+							getBoundingBox().getTopLeft()
+						)+Vec2D(0,getBoundingBox().getHeight()));
+					normal_vec = Vec2D(0,-1);
+					break;				
+	
+				default:
+					break;
+				}
+				
+				setDirection(getDirection().reflect(normal_vec));
+		
+			}
+}
+

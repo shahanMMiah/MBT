@@ -8,6 +8,8 @@
 #include <vector>
 #include <bubble.h>
 #include <needle.h>
+#include <door.h>
+
 
 class Game
 {
@@ -16,6 +18,7 @@ class Game
         void draw(GameWindow& window ,uint32_t delta_time);
         bool update(uint32_t delta_time);
 
+        
         void checkWallBounce();
         void groundPlayer();
         void setupPlayerControls();
@@ -28,8 +31,10 @@ class Game
     Player mPlayer;
     Controller mController;
     std::vector<Wall> mWalls;
+    std::vector<Door> mDoors;
     std::vector<Bubble> mBubbles;
     std::vector<Needle> mNeedles;
+    
     
 };
 

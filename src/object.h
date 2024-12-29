@@ -13,6 +13,8 @@ class Object
     virtual void draw(GameWindow &window);
     virtual void update();
     void move(){mPos += mDirection;mBoundingBox.moveBy(mDirection);}
+    inline Vec2D getPos() {return mPos;}
+    inline Rectangle &getBoundingBox(){return mBoundingBox;}
     
 
     protected:
