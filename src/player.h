@@ -28,6 +28,10 @@ class Player: public Object
         Vec2D getBottomMid() {return (((mBoundingBox.getBottomLeft() - mBoundingBox.getBottomRight())/2) + mBoundingBox.getBottomLeft());}
         virtual void reset() override;
         void setSize(int size); 
+
+        void groundPlayer(Rectangle& ground);
+        
+
         
 
     private:

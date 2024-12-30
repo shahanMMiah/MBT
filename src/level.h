@@ -20,7 +20,7 @@ class Level
 
     Level(nlohmann::json &data, int levelNum);
     
-    void setPlayerPos(Player &player);
+    void setPlayerPos(Player &player, Wall &wall);
     void setWalls(std::vector<Wall> &walls);
     void setDoors(std::vector<Door> &doors);
     void setBubbles(std::vector<Bubble> &bubbles);

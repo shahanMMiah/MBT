@@ -16,12 +16,13 @@ Level::Level(nlohmann::json &data, int levelNum)
     
 }
 
-void Level::setPlayerPos(Player &player)
+void Level::setPlayerPos(Player &player, Wall &wall)
 {
     player.reset();
     
     player.setSize(mLevelData[mLevel]["player"]["size"]);
     player.setMove(Vec2D(mLevelData[mLevel]["player"]["x"],mLevelData[mLevel]["player"]["y"]));
+    player.groundPlayer(wall.getBoundingBox());
 }
 
 void Level::setWalls(std::vector<Wall> &walls)

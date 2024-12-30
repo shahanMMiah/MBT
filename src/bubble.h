@@ -5,29 +5,24 @@
 #include <utils.h>
 #include <nlohmann/json.hpp>
 
-class GameWindow;
 
-class Bubble
+class GameWindow;
+class Object;
+
+class Bubble: public Object
 {
     public:
         Bubble();
         Bubble(Vec2D pos, int size);
         Bubble(Vec2D pos, int size, int side);
         
+         
+        virtual void draw(GameWindow &window) override;
         
-        void draw(GameWindow &window);
-        
-        void moveDir(controlStates_t dir);
-        void update();
+   
+        virtual void update() override;
         void checkBounce(Rectangle &boundingBox);
-        
-        inline Rectangle &getBoundingBox(){return mBoundingBox;}
-        inline Vec2D getPos(){return mPos;}
-        inline Vec2D getDirection(){return mDirection;}
-        inline void move(){mPos += mDirection;mBoundingBox.moveBy(mDirection);}
-        inline void setMove(Vec2D pos){mPos = pos;mBoundingBox.moveTo(pos);}
-
-        inline void setDirection(Vec2D delta){mDirection=delta;}
+       
         inline void setPos(Vec2D delta){mPos=delta;}
         inline void setPopped(bool pop){mPopped = pop;} 
         inline void setSize(int size){mSize= size;}
@@ -38,11 +33,7 @@ class Bubble
 
 
     private:
-        Vec2D mPos; 
-        Rectangle mBoundingBox;
-        int mWidth;
-        int mHeight;
-        Vec2D mDirection;
+        
         int mSpeed;
         float mFallRate = DEFAULT_BUBBLE_FALLRATE;
         float mSideDir = DEFAULT_BUBBLE_SIDE;

@@ -3,6 +3,7 @@
 #include <color.h>
 #include <iostream>
 #include <utils.h>
+#include <line2d.h>
 
 
 
@@ -129,4 +130,11 @@ void::Player::setSize(int size)
     mWidth = size;
     mHeight = size;
     mBoundingBox = Rectangle(mPos, mWidth, mHeight);
+}
+
+void Player::groundPlayer(Rectangle& ground)
+{
+	Line2D line(ground.getTopLeft(),ground.getTopRight());
+	moveFromBottom(line.closestPoint(mPos));
+	
 }

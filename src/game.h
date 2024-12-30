@@ -21,14 +21,18 @@ class Game
 
         
         void checkWallBounce();
-        void groundPlayer();
+        
         void setupPlayerControls();
         void checkNeedleHit();
         void checkBubblePopped();
         void resizeBubbles(std::vector<Bubble>& other);
         void addNeedle();
         void popNeedle();
+        void addLevel(int levelNum);
         void setLevel(int levelNum);
+        void checkPlayerWalls();
+        void checkPlayerHit();
+        void checkLives();
 
     private:
     Player mPlayer;
@@ -40,6 +44,7 @@ class Game
     std::vector<Level> mLevels;
     nlohmann::json mLevelData;
     int mCurrentLevel =0;
+    int mLives = 3;
 
 
 

@@ -44,13 +44,9 @@ Game::Game(GameWindow& window)
 	
 	mPlayer = Player(Vec2D::Zero, DEFAULT_PLAYER_SIZE,DEFAULT_PLAYER_SIZE);
 	mLevelData = DEFAULT_LEVEL_DATA;
-	setLevel(mCurrentLevel);
+	addLevel(mCurrentLevel);
 	setupPlayerControls();
-	groundPlayer();
-
-	setLevel(mCurrentLevel);
-	setupPlayerControls();
-	groundPlayer();
+	mPlayer.groundPlayer(mWalls[0].getBoundingBox());
 
 }
 
@@ -153,9 +149,14 @@ bool Game:: update(uint32_t delta_time)
 	}
 
 	
+	checkPlayerHit();
+	checkLives();
 	checkWallBounce();
 	checkNeedleHit();
 	checkBubblePopped();
+	checkPlayerWalls();
+	
+
     return(quit);
 }
 
@@ -180,16 +181,6 @@ void Game:: checkWallBounce()
 	}
 }
 
-
-
-
-void Game::groundPlayer()
-{
-	Line2D line(mWalls[0].getBoundingBox().getTopLeft(),mWalls[0].getBoundingBox().getTopRight());
-	mPlayer.moveFromBottom(line.closestPoint(mPlayer.getPos()));
-	
-	
-}
 
 void Game::checkNeedleHit()
 {
@@ -275,14 +266,54 @@ void Game::popNeedle()
 
 }
 
-void Game::setLevel(int levelNum)
+void Game::addLevel(int levelNum)
 {
 	mLevels.push_back(Level(mLevelData, levelNum));
+	mCurrentLevel = levelNum;
+	setLevel(mCurrentLevel);
+}
+
+void Game::setLevel(int levelNum)
+{
 	
-	mLevels.back().setPlayerPos(mPlayer);
+	
 	mLevels.back().setWalls(mWalls);
 	mLevels.back().setDoors(mDoors);
 	mLevels.back().setBubbles(mBubbles);
 	mLevels.back().setNeedles(mNeedles);
-	
+	mLevels.back().setPlayerPos(mPlayer, mWalls[0]);
+}
+
+void Game::checkPlayerWalls()
+{
+	for (auto &wall: mWalls)
+	{
+		mPlayer.checkCollision(wall.getBoundingBox());
+	}
+	for (auto &door: mDoors)
+	{
+		mPlayer.checkCollision(door.getDoorBoundingBox());
+		mPlayer.checkCollision(door.getTopBoundingBox());
+	}
+}       
+
+void Game::checkPlayerHit()
+{
+	for (auto &bubble: mBubbles)
+	{
+		if(mPlayer.getBoundingBox().intersects(bubble.getBoundingBox()))
+		{
+			mLives --;
+			std::cout << "got hit" << std::endl;
+			setLevel(mCurrentLevel);
+		}
+	}	
+}
+
+void Game::checkLives()
+{
+	if (mLives < 0)
+	{
+		std::cout << "you deddddd" << std::endl;
+	}
 }
