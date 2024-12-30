@@ -25,6 +25,7 @@ SET(SOURCES
     src/object.cpp
     src/needle.cpp
     src/door.cpp
+    src/level.cpp
     )
 
 find_package(SDL2 REQUIRED)

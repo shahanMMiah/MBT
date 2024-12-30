@@ -9,6 +9,7 @@
 #include <bubble.h>
 #include <needle.h>
 #include <door.h>
+#include <level.h>
 
 
 class Game
@@ -25,7 +26,9 @@ class Game
         void checkNeedleHit();
         void checkBubblePopped();
         void resizeBubbles(std::vector<Bubble>& other);
-
+        void addNeedle();
+        void popNeedle();
+        void setLevel(int levelNum);
 
     private:
     Player mPlayer;
@@ -34,6 +37,12 @@ class Game
     std::vector<Door> mDoors;
     std::vector<Bubble> mBubbles;
     std::vector<Needle> mNeedles;
+    std::vector<Level> mLevels;
+    nlohmann::json mLevelData;
+    int mCurrentLevel =0;
+
+
+
     
     
 };

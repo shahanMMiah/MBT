@@ -13,3 +13,9 @@ void Object::update()
 {
     	move();
 }
+
+void Object::reset()
+{
+    setMove(Vec2D::Zero);
+    mDirection = Vec2D::Zero;
+}

@@ -6,7 +6,8 @@
 
 Game::Game(GameWindow& window)
 {
-    Vec2D point1(window.getBacksurface()->w/2 - 20, window.getBacksurface()->h/2 + 20);
+    /*
+	Vec2D point1(window.getBacksurface()->w/2 - 20, window.getBacksurface()->h/2 + 20);
 	Vec2D point2(window.getBacksurface()->w/2 + 20, window.getBacksurface()->h/2 + 20);
 	//Rectangle rect(point1, point2);
 	mPlayer = Player(point1, 30, 30);
@@ -19,6 +20,7 @@ Game::Game(GameWindow& window)
 	
 	mBubbles.push_back(Bubble(point1+Vec2D(-120,0), DEFAULT_BUBBLE_SIZE-1, DEFAULT_BUBBLE_SIDE*-1));
 	mBubbles.push_back(Bubble(point1+Vec2D(50,0), DEFAULT_BUBBLE_SIZE, DEFAULT_BUBBLE_SIDE));
+	
 	for(int iter =0;iter<DEFAULT_NEEDLE_AMOUNT;iter++)
 	{
 		mNeedles.push_back(Needle(mPlayer.getPos(), DEFAULT_NEEDLE_WIDTH, DEFAULT_NEEDLE_HEIGHT));
@@ -38,8 +40,15 @@ Game::Game(GameWindow& window)
 			RIGHTSIDE
 		)
 	);
+	*/
+	
+	mPlayer = Player(Vec2D::Zero, DEFAULT_PLAYER_SIZE,DEFAULT_PLAYER_SIZE);
+	mLevelData = DEFAULT_LEVEL_DATA;
+	setLevel(mCurrentLevel);
+	setupPlayerControls();
+	groundPlayer();
 
-
+	setLevel(mCurrentLevel);
 	setupPlayerControls();
 	groundPlayer();
 
@@ -253,5 +262,27 @@ void Game:: resizeBubbles(std::vector<Bubble>& other)
 
 	mBubbles = std::move(other);
 	other.clear();
+	
+}
+
+void Game::addNeedle()
+{
+	mNeedles.push_back(Needle(mPlayer.getPos(), DEFAULT_NEEDLE_WIDTH, DEFAULT_NEEDLE_HEIGHT));
+}
+void Game::popNeedle()
+{
+	mNeedles.pop_back();
+
+}
+
+void Game::setLevel(int levelNum)
+{
+	mLevels.push_back(Level(mLevelData, levelNum));
+	
+	mLevels.back().setPlayerPos(mPlayer);
+	mLevels.back().setWalls(mWalls);
+	mLevels.back().setDoors(mDoors);
+	mLevels.back().setBubbles(mBubbles);
+	mLevels.back().setNeedles(mNeedles);
 	
 }

@@ -20,17 +20,7 @@ int main()
 
 	bool run = true;
 	
-	/*
-	nlohmann::json levelData = {
-        {"level_id", 1},
-        {"name", "First Level"},
-        {"player_start", {{"x", 50}, {"y", 100}}},
-        {"enemies", {
-            {{"type", "slime"}, {"x", 200}, {"y", 300}},
-            {{"type", "bat"}, {"x", 400}, {"y", 500}}
-        }}
-    };
-	*/
+
 
 	while (run)
 	{
