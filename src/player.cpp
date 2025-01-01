@@ -48,7 +48,7 @@ Player::Player(Vec2D pos, Rectangle rect):mStates{false,false,false,false}
 void Player:: draw(GameWindow &window)
 {   
     PixelPoints_t pixels = mBoundingBox.getFilledPixels(mBoundingBox.getPoints());
-    window.draw(pixels, Color::blue());
+    window.draw(pixels, Color::green());
     window.draw(mPos.getX(),mPos.getY(), Color::red());
     
 }
@@ -102,6 +102,7 @@ size_t Player::shoot(std::vector<Needle>& needles)
 {   
     for (size_t iter =0; iter < needles.size();iter++)
     {
+       
         if (needles[iter].getLoaded())
         {   
             needles[iter].setPos(getBottomMid()+Vec2D(30,-10));

@@ -1,52 +1,25 @@
-#include<game.h>
+#include <game.h>
 #include <utils.h>
-#include<line2d.h>
+#include <line2d.h>
 #include <algorithm>
+#include <string>
 
 
 Game::Game(GameWindow& window)
 {
-    /*
-	Vec2D point1(window.getBacksurface()->w/2 - 20, window.getBacksurface()->h/2 + 20);
-	Vec2D point2(window.getBacksurface()->w/2 + 20, window.getBacksurface()->h/2 + 20);
-	//Rectangle rect(point1, point2);
-	mPlayer = Player(point1, 30, 30);
-
-	mWalls.push_back(Wall(Vec2D(0, window.getBacksurface()->h  - DEFAULT_WALL_THICKNESS), window.getBacksurface()->w, DEFAULT_WALL_THICKNESS));
-	mWalls.push_back(Wall(Vec2D(0,0), DEFAULT_WALL_THICKNESS, window.getBacksurface()->h ));
-	mWalls.push_back(Wall(Vec2D(window.getBacksurface()->w -DEFAULT_WALL_THICKNESS,0), DEFAULT_WALL_THICKNESS, window.getBacksurface()->h ));
-	mWalls.push_back(Wall(Vec2D(0,0), window.getBacksurface()->w, DEFAULT_WALL_THICKNESS ));
-	
-	
-	mBubbles.push_back(Bubble(point1+Vec2D(-120,0), DEFAULT_BUBBLE_SIZE-1, DEFAULT_BUBBLE_SIDE*-1));
-	mBubbles.push_back(Bubble(point1+Vec2D(50,0), DEFAULT_BUBBLE_SIZE, DEFAULT_BUBBLE_SIDE));
-	
-	for(int iter =0;iter<DEFAULT_NEEDLE_AMOUNT;iter++)
-	{
-		mNeedles.push_back(Needle(mPlayer.getPos(), DEFAULT_NEEDLE_WIDTH, DEFAULT_NEEDLE_HEIGHT));
-		
-	}
-
-
-	mDoors.push_back(
-		Door(
-			Vec2D::Zero, 
-			Rectangle(
-				Vec2D::Zero,window.getBacksurface()->w/2, 
-				window.getBacksurface()->h 
-			), 
-			DEFAULT_WALL_THICKNESS, 
-			DEFAULT_DOOR_HEIGHT, 
-			RIGHTSIDE
-		)
-	);
-	*/
 	
 	mPlayer = Player(Vec2D::Zero, DEFAULT_PLAYER_SIZE,DEFAULT_PLAYER_SIZE);
 	mLevelData = DEFAULT_LEVEL_DATA;
 	addLevel(mCurrentLevel);
 	setupPlayerControls();
 	mPlayer.groundPlayer(mWalls[0].getBoundingBox());
+	
+
+
+	mPauseScreen = Dialog(LEVEL_PAUSE,Vec2D((window.getBacksurface()->w/2)-250,(window.getBacksurface()->h/2)-125), 500,250);
+	
+	mState = PLAY;
+
 
 }
 
@@ -88,75 +61,122 @@ void Game:: setupPlayerControls()
 	auto shoot_func = [this](uint32_t delta_amount)
 	{
 		mPlayer.shoot(mNeedles);
+		//std::cout<<"shot"<<std::endl;
 	};
 	controlInput_t shoot = {.sym=SDLK_SPACE, .func=shoot_func};
 	mController.mControlInputs.push_back(shoot);
+
+
+	auto pause_func = [this](uint32_t delta_amount)
+	{
+		
+		switch(mState)
+		{
+			case PLAY:
+				
+				mState = PAUSE;
+				
+				break;
+			case PAUSE:
+				mState = PLAY;
+				break;
+		}
+		
+	};
+	controlInput_t pause = {.sym=SDLK_ESCAPE, .func=pause_func};
+	mController.mControlInputs.push_back(pause);
 }
 
 void Game:: draw(GameWindow& window ,uint32_t delta_time)
 {
 	//window.resize();
-    mPlayer.draw(window);
+	if(mState == SETUP)
+	{
+		mState = PLAY;
+		
+	}
+
+	else if(mState == PLAY || PAUSE)
+	{
+		
+		mPlayer.draw(window);
+		
+		for (auto &door : mDoors)
+		{
+			door.draw(window);
+		}
+
+		for (auto &wall : mWalls)
+		{
+			wall.draw(window);
+		}
+
+		for (auto &bubble : mBubbles)
+		{
+
+			bubble.draw(window);
+		}
+
+		for (auto &needle: mNeedles)
+		{
+			needle.draw(window);
+		}
+
+		if(mState == PAUSE)
+		{
+			
+			mPauseScreen.draw(window);
+		}
+
+		window.flip();
+	}
 	
-	for (auto &door : mDoors)
-	{
-		door.draw(window);
-	}
+	
 
-	for (auto &wall : mWalls)
-	{
-		wall.draw(window);
-	}
-
-	for (auto &bubble : mBubbles)
-	{
-
-		bubble.draw(window);
-	}
-
-	for (auto &needle: mNeedles)
-	{
-		needle.draw(window);
-	}
-
-    window.flip();
 }
 
 bool Game:: update(uint32_t delta_time)
 {   
     bool quit = mController.update(delta_time);
     
-	mPlayer.update();
-	
-	std::vector<Bubble> bubbleDest;
-	resizeBubbles(bubbleDest);
+	if (mState == PLAY)
+	{
+		
+		mPlayer.update();
+		
+		std::vector<Bubble> bubbleDest;
+		resizeBubbles(bubbleDest);
 
-	for (auto &door: mDoors)
-	{
-		door.checkIfOpen(mBubbles);
-		door.update();
-	}
-	
-	for (auto &bubble : mBubbles)
-	{
-		bubble.update();
+		for (auto &door: mDoors)
+		{
+			door.checkIfOpen(mBubbles);
+			door.update();
+		}
+		
+		for (auto &bubble : mBubbles)
+		{
+			bubble.update();
+			
+		}
+
+		for (auto &needle: mNeedles)
+		{
+			needle.update();
+		}
+		
+
+		checkPlayerHit();
+		checkLives();
+		checkWallBounce();
+		checkBubblePopped();
+		checkPlayerWalls();
+		checkLevelTime();
+		checkWin();		
+		checkNeedleHit();
+		
 		
 	}
-
-	for (auto &needle: mNeedles)
-	{
-		needle.update();
-	}
-
 	
-	checkPlayerHit();
-	checkLives();
-	checkWallBounce();
-	checkNeedleHit();
-	checkBubblePopped();
-	checkPlayerWalls();
-	
-
     return(quit);
 }
 
@@ -181,14 +201,13 @@ void Game:: checkWallBounce()
 	}
 }
 
-
 void Game::checkNeedleHit()
 {
 	for (auto &needle : mNeedles)
 	{
 		for (auto &wall : mWalls)
 		{
-			if (!needle.getHit() && needle.checkCollided(wall.getBoundingBox()))
+			if (!needle.getHit() && !needle.getLoaded() && needle.checkCollided(wall.getBoundingBox()))
 			{
 				needle.setHit(true);
 
@@ -260,6 +279,7 @@ void Game::addNeedle()
 {
 	mNeedles.push_back(Needle(mPlayer.getPos(), DEFAULT_NEEDLE_WIDTH, DEFAULT_NEEDLE_HEIGHT));
 }
+
 void Game::popNeedle()
 {
 	mNeedles.pop_back();
@@ -274,14 +294,16 @@ void Game::addLevel(int levelNum)
 }
 
 void Game::setLevel(int levelNum)
-{
-	
-	
+{	
+	mState = SETUP;
+	std::cout << "lives: " << mLives << std::endl;
+	mLevels.back().setLevelTick(SDL_GetTicks());
 	mLevels.back().setWalls(mWalls);
 	mLevels.back().setDoors(mDoors);
+	mLevels.back().setPlayerPos(mPlayer, mWalls[0]);
 	mLevels.back().setBubbles(mBubbles);
 	mLevels.back().setNeedles(mNeedles);
-	mLevels.back().setPlayerPos(mPlayer, mWalls[0]);
+	
 }
 
 void Game::checkPlayerWalls()
@@ -299,9 +321,10 @@ void Game::checkPlayerWalls()
 
 void Game::checkPlayerHit()
 {
+	
 	for (auto &bubble: mBubbles)
 	{
-		if(mPlayer.getBoundingBox().intersects(bubble.getBoundingBox()))
+		if(mPlayer.getBoundingBox().intersects(bubble.getBoundingBox()) && mState == PLAY)
 		{
 			mLives --;
 			std::cout << "got hit" << std::endl;
@@ -314,6 +337,39 @@ void Game::checkLives()
 {
 	if (mLives < 0)
 	{
-		std::cout << "you deddddd" << std::endl;
+		std::cout << "lives: " << mLives << std::endl;
 	}
 }
+
+void Game::checkWin()
+{
+	if (mBubbles.size() == 0)
+	{
+		std::cout << "passed level" << mCurrentLevel << std::endl;
+		mCurrentLevel ++;
+		addLevel(mCurrentLevel);
+
+	}
+
+}
+
+void Game::checkLevelTime()
+{
+	double time = mLevels.back().getElapsedTime();
+	if(time >  mLevels.back().getTimeLimit())
+	{
+		mLives --;
+		std::cout << "ran out of time" << std::endl;
+		
+		setLevel(mCurrentLevel);
+		
+		
+	}
+
+	else 
+	{
+		//std::cout << "current Time is"<< time<< std::endl;
+	}
+
+}
+

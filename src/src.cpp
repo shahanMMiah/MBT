@@ -33,9 +33,11 @@ int main()
 		accum += from_last_tick;
 		last_tick = current_tick;
 
-		run = game.update(delta_amount);
+		
+		
 		while(accum >= delta_amount)
 		{
+			run = game.update(delta_amount);
 
 			game.draw(window,delta_amount);
 			

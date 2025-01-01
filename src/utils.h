@@ -48,7 +48,45 @@ typedef enum side_names {TOPSIDE,LEFTSIDE,RIGHTSIDE,BOTTOMSIDE}sideNames_t;
 const nlohmann::json DEFAULT_LEVEL_DATA = {
     {
         "0", {
-                {"player", {{"x", 50}, {"y", 100},{"size", DEFAULT_PLAYER_SIZE}}},
+                {"player", {{"x", 50}, {"y", 500},{"size", DEFAULT_PLAYER_SIZE}}},
+                {"bubbles", {
+                        {{"size", 2}, {"x", DEFAULT_WINDOW_WIDTH/2 + 250}, {"y", DEFAULT_WINDOW_HEIGHT/2}, {"size", DEFAULT_BUBBLE_SIZE}, {"side", DEFAULT_BUBBLE_SIDE}},
+                        
+                        }},
+                {"doors",{
+                     
+                }},
+                {"walls",{
+                        {
+                        // base bottom
+                        {"width",DEFAULT_WINDOW_WIDTH},{"height",DEFAULT_WALL_THICKNESS }, {"x", 0}, {"y", DEFAULT_WINDOW_HEIGHT-DEFAULT_WALL_THICKNESS}, {"directionX",3},{"directionY",0},
+                        },
+                        // base left
+                        {
+                        {"width",DEFAULT_WALL_THICKNESS},{"height",DEFAULT_WINDOW_HEIGHT }, {"x", 0}, {"y",0}, {"directionX",3},{"directionY",0},
+                        },
+                        // base right
+                        {
+                        {"width",DEFAULT_WALL_THICKNESS},{"height",DEFAULT_WINDOW_HEIGHT }, {"x", DEFAULT_WINDOW_WIDTH-DEFAULT_WALL_THICKNESS}, {"y",0}, {"directionX",3},{"directionY",0},
+                        },
+                        // base top
+                        {
+                        {"width",DEFAULT_WINDOW_WIDTH},{"height",DEFAULT_WALL_THICKNESS }, {"x", 0}, {"y",0}, {"directionX",3},{"directionY",0},
+                        }
+                    }
+                },
+                {"needles",1},
+                {"timeLimit", 15},    
+                {"items",{{"type", "extraNeedle"}, {"x", 50}, {"y", 50}}},
+                
+
+              
+        }
+        
+    },
+    {
+        "1", {
+                {"player", {{"x", 50}, {"y", 500},{"size", DEFAULT_PLAYER_SIZE}}},
                 {"bubbles", {
                         {{"size", 3}, {"x", DEFAULT_WINDOW_WIDTH/2 + 250}, {"y", DEFAULT_WINDOW_HEIGHT/2}, {"size", DEFAULT_BUBBLE_SIZE}, {"side", DEFAULT_BUBBLE_SIDE}},
                         {{"size", 2}, {"x", DEFAULT_WINDOW_WIDTH/2 - 250}, {"y", DEFAULT_WINDOW_HEIGHT/2}, {"size", DEFAULT_BUBBLE_SIZE}, {"side", DEFAULT_BUBBLE_SIDE*-1}},
@@ -80,13 +118,14 @@ const nlohmann::json DEFAULT_LEVEL_DATA = {
                         }
                     }
                 },
-                {"needles",1},    
+                {"needles",1},
+                {"timeLimit", 60},    
                 {"items",{{"type", "extraNeedle"}, {"x", 50}, {"y", 50}}},
 
               
         }
         
-    }   
+    }    
     
 };
 	

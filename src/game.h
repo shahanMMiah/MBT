@@ -10,7 +10,19 @@
 #include <needle.h>
 #include <door.h>
 #include <level.h>
+#include <dialog.h>
 
+
+typedef enum gamesStates{
+    PLAY,
+    PAUSE,
+    DIED,
+    SETUP,
+    CUSTCENE
+
+    
+
+} GameStates_t; 
 
 class Game
 {
@@ -21,7 +33,7 @@ class Game
 
         
         void checkWallBounce();
-        
+        void checkWin();
         void setupPlayerControls();
         void checkNeedleHit();
         void checkBubblePopped();
@@ -33,6 +45,9 @@ class Game
         void checkPlayerWalls();
         void checkPlayerHit();
         void checkLives();
+        void checkLevelTime();
+        
+
 
     private:
     Player mPlayer;
@@ -45,6 +60,8 @@ class Game
     nlohmann::json mLevelData;
     int mCurrentLevel =0;
     int mLives = 3;
+    GameStates_t mState;
+    Dialog mPauseScreen;
 
 
 

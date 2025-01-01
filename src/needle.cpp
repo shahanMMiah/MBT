@@ -37,11 +37,14 @@ Needle::Needle(Vec2D pos, int width, int height)
 void Needle::shoot()
 {
     setLoaded(false);
+
    
 }
 
 void Needle::update()
 {
+    
+    
     if (!mHit && !mLoaded)
     {   
         
@@ -50,11 +53,15 @@ void Needle::update()
         mStringBoundingBox.moveBy(2, mDirection);
            
     }
+    
     if(mHit)
     {
         setLoaded(true);
         setHit(false);
     }
+
+
+
 }
 
 void Needle::setPos(Vec2D pos)

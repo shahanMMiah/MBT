@@ -25,6 +25,9 @@ class Level
     void setDoors(std::vector<Door> &doors);
     void setBubbles(std::vector<Bubble> &bubbles);
     void setNeedles(std::vector<Needle> &needles);
+    double getElapsedTime(){return (SDL_GetTicks() - mLevelTick) / 1000.0;};
+    inline double getTimeLimit(){return mTimeLimit;}
+    void setLevelTick(uint32_t tick){mLevelTick = tick;}
 
     //void setItems(std::vector<Item> &items);
 
@@ -32,7 +35,11 @@ class Level
     private:
 
     nlohmann::json mLevelData;
-    std::string mLevel; 
+    std::string mLevel;
+    uint32_t mLevelTick;
+    double mTimeLimit;
+     
+
 
 
 

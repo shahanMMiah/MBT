@@ -15,6 +15,9 @@ bool Controller::update(uint32_t delta_time)
             return false;
             
         case SDL_KEYUP:
+        {
+            break;
+        }
         case SDL_KEYDOWN:
             inputFunction_t func = getKeyFunc(SDLEvent.key.keysym.sym);
             func(delta_time);

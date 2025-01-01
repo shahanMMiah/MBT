@@ -30,9 +30,9 @@ class Object
     protected:
         Vec2D mPos; 
         Rectangle mBoundingBox;
-        int mWidth;
-        int mHeight;
         Vec2D mDirection;
+        int mWidth=0;
+        int mHeight=0;
         int mSpeed=10;
 };
 

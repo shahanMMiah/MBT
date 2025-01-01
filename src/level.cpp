@@ -1,10 +1,11 @@
+#include <SDL2/SDL.h>
 #include <level.h>
 #include <algorithm>
 #include <player.h>
-#include<wall.h>
-#include<bubble.h>
-#include<needle.h>
-#include<door.h>
+#include <wall.h>
+#include <bubble.h>
+#include <needle.h>
+#include <door.h>
 
 
 Level::Level(nlohmann::json &data, int levelNum)
@@ -12,6 +13,8 @@ Level::Level(nlohmann::json &data, int levelNum)
 
     mLevelData = data;
     mLevel = std::to_string(levelNum);
+    mLevelTick = SDL_GetTicks();
+    mTimeLimit = mLevelData[mLevel]["timeLimit"];
  
     
 }
@@ -89,3 +92,5 @@ void Level::setNeedles(std::vector<Needle> &needles)
 		
 	}
 }
+
+
