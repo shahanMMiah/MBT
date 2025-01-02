@@ -1,5 +1,7 @@
 #include <controller.h>
 #include <SDL2/SDL.h>
+#include <iostream>
+#include <string>
 
 Controller::Controller()
 {}
@@ -20,6 +22,7 @@ bool Controller::update(uint32_t delta_time)
         }
         case SDL_KEYDOWN:
             inputFunction_t func = getKeyFunc(SDLEvent.key.keysym.sym);
+            
             func(delta_time);
             
         }

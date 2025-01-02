@@ -29,6 +29,11 @@ const int DEFAULT_WALL_THICKNESS = 30;
 const int DEFAULT_DOOR_HEIGHT = 50;
 
 
+const int DEFAULT_DIALOG_WIDTH = 500;
+const int DEFAULT_DIALOG_HEIGHT = 250;
+
+
+
 typedef struct Pixel_points
 {
     std::vector <int> xs;
@@ -42,6 +47,15 @@ DOWN,
 LEFT,
 RIGHT,
 } controlStates_t;
+
+typedef enum cutsceneLevelStates{
+LEVEL_START_STATE,
+LEVEL_PLAY_STATE,
+LEVEL_END_STATE,
+LEVEL_PAUSE_STATE
+} CutsceneLevelStates_t;
+
+
 
 typedef enum side_names {TOPSIDE,LEFTSIDE,RIGHTSIDE,BOTTOMSIDE}sideNames_t;
 
@@ -76,12 +90,17 @@ const nlohmann::json DEFAULT_LEVEL_DATA = {
                     }
                 },
                 {"needles",1},
-                {"timeLimit", 15},    
+                {"timeLimit", 30},    
                 {"items",{{"type", "extraNeedle"}, {"x", 50}, {"y", 50}}},
-                
+                {"cutscenes",{
+                    {{"message","SOME DIALOG"}, {"width", DEFAULT_DIALOG_WIDTH+100},{"height", DEFAULT_DIALOG_HEIGHT+100},{"state",LEVEL_START_STATE}},
+                    {{"message","press space to play"}, {"width", DEFAULT_DIALOG_WIDTH-100},{"height", DEFAULT_DIALOG_HEIGHT-100},{"state",LEVEL_START_STATE}},
+                    {{"message", "well done"}, {"width", DEFAULT_DIALOG_WIDTH},{"height", DEFAULT_DIALOG_HEIGHT},{"state",LEVEL_END_STATE}}
+                    }},
 
-              
-        }
+                {"window", {{"width",DEFAULT_WINDOW_WIDTH}, {"height", DEFAULT_WINDOW_HEIGHT}}}    
+        },
+        
         
     },
     {
@@ -121,6 +140,10 @@ const nlohmann::json DEFAULT_LEVEL_DATA = {
                 {"needles",1},
                 {"timeLimit", 60},    
                 {"items",{{"type", "extraNeedle"}, {"x", 50}, {"y", 50}}},
+                {"cutscenes",{
+                    {{"message","get ready"}, {"width", DEFAULT_DIALOG_WIDTH},{"height", DEFAULT_DIALOG_HEIGHT},{"state",LEVEL_START_STATE}},
+                }},
+                {"window", {{"width",DEFAULT_WINDOW_WIDTH}, {"height", DEFAULT_WINDOW_HEIGHT}}}
 
               
         }

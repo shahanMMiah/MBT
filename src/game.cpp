@@ -11,15 +11,18 @@ Game::Game(GameWindow& window)
 	mPlayer = Player(Vec2D::Zero, DEFAULT_PLAYER_SIZE,DEFAULT_PLAYER_SIZE);
 	mLevelData = DEFAULT_LEVEL_DATA;
 	addLevel(mCurrentLevel);
+	
 	setupPlayerControls();
 	mPlayer.groundPlayer(mWalls[0].getBoundingBox());
 	
 
-
 	mPauseScreen = Dialog(LEVEL_PAUSE,Vec2D((window.getBacksurface()->w/2)-250,(window.getBacksurface()->h/2)-125), 500,250);
 	
-	mState = PLAY;
+	mLevels.back().getCutScene().setController(Controller());
+	mPauseScreen.setController(Controller()); 
 
+	setupPauseControls();
+	
 
 }
 
@@ -69,79 +72,119 @@ void Game:: setupPlayerControls()
 
 	auto pause_func = [this](uint32_t delta_amount)
 	{
+	
+		mState = PAUSE;
+		mPauseScreen.setOn(true);
 		
-		switch(mState)
-		{
-			case PLAY:
-				
-				mState = PAUSE;
-				
-				break;
-			case PAUSE:
-				mState = PLAY;
-				break;
-		}
 		
 	};
 	controlInput_t pause = {.sym=SDLK_ESCAPE, .func=pause_func};
 	mController.mControlInputs.push_back(pause);
+	
 }
+
+void Game::setupPauseControls()
+{   
+
+	auto ok_func = [this](uint32_t delta_amount) 
+	{
+		mState = PLAY;
+				
+	};
+	controlInput_t ok = {.sym=SDLK_ESCAPE, .func=ok_func};
+	mPauseScreen.getController().mControlInputs.push_back(ok);
+
+
+}
+
+void Game::setupCutsceneControls()
+{
+	mLevels.back().getCutScene().getController().mControlInputs.clear();
+	auto ok_func = [this](uint32_t delta_amount) 
+        {
+            
+			mLevels.back().getCutScene().setOn(false);
+			mLevels.back().incrementCutscene();
+			
+			if (
+				mLevels.back().getCutScene().getDialogState() != mLevels.back().getLevelState() ||
+				mLevels.back().getCutsceneNum() > mLevels.back().getCutsceneSize() ||
+				mLevels.back().getCutsceneSize() == 0
+				)
+			{
+				
+				mLevels.back().setLevelState(LEVEL_PLAY_STATE);
+				mState = PLAY;
+			}
+
+			
+        };
+        controlInput_t ok = {.sym=SDLK_SPACE, .func=ok_func};
+        
+		mLevels.back().getCutScene().getController().mControlInputs.push_back(ok);
+}
+
+
+
 
 void Game:: draw(GameWindow& window ,uint32_t delta_time)
 {
 	//window.resize();
-	if(mState == SETUP)
+	if (mState == SETUP)
 	{
 		mState = PLAY;
-		
 	}
-
-	else if(mState == PLAY || PAUSE)
+	else if(mState == PLAY || mState == PAUSE || mState == CUTSCENE)
 	{
-		
-		mPlayer.draw(window);
-		
-		for (auto &door : mDoors)
-		{
-			door.draw(window);
-		}
-
-		for (auto &wall : mWalls)
-		{
-			wall.draw(window);
-		}
-
-		for (auto &bubble : mBubbles)
-		{
-
-			bubble.draw(window);
-		}
-
-		for (auto &needle: mNeedles)
-		{
-			needle.draw(window);
-		}
-
-		if(mState == PAUSE)
-		{
+			mPlayer.draw(window);
 			
-			mPauseScreen.draw(window);
-		}
+			for (auto &door : mDoors)
+			{
+				door.draw(window);
+			}
 
+			for (auto &wall : mWalls)
+			{
+				wall.draw(window);
+			}
+
+			for (auto &bubble : mBubbles)
+			{
+
+				bubble.draw(window);
+			}
+
+			for (auto &needle: mNeedles)
+			{
+				needle.draw(window);
+			}
+		
+		if(mState == PAUSE)
+			{
+				mPauseScreen.draw(window);
+			}
+
+		if(mState == CUTSCENE)
+			{
+				if(mLevels.back().getCutScene().getOn())
+				{
+					mLevels.back().drawCutscene(window);
+				}			
+			}
 		window.flip();
-	}
+	}	
 	
-	
-
 }
 
 bool Game:: update(uint32_t delta_time)
 {   
-    bool quit = mController.update(delta_time);
-    
+    bool quit = true; 
+
 	if (mState == PLAY)
 	{
-		
+		std::cout<<"in olay"<<std::endl;
+		quit = mController.update(delta_time);
+
 		mPlayer.update();
 		
 		std::vector<Bubble> bubbleDest;
@@ -171,10 +214,22 @@ bool Game:: update(uint32_t delta_time)
 		checkBubblePopped();
 		checkPlayerWalls();
 		checkLevelTime();
+		checkEndCutscene();
 		checkWin();		
 		checkNeedleHit();
 		
-		
+	}
+
+	else if (mState == PAUSE)
+	{
+		mPauseScreen.update(delta_time);	 
+	}
+	else if (mState == CUTSCENE)
+	{
+		if(mLevels.back().getCutScene().getDialogState() == mLevels.back().getLevelState())
+			mLevels.back().getCutScene().setOn(true);
+			setupCutsceneControls();
+			mLevels.back().updateCutscene(delta_time);
 	}
 	
     return(quit);
@@ -291,12 +346,26 @@ void Game::addLevel(int levelNum)
 	mLevels.push_back(Level(mLevelData, levelNum));
 	mCurrentLevel = levelNum;
 	setLevel(mCurrentLevel);
+	
+	mLevels.back().setupCutscenes(); // load dialogs in vector
+	
+	if (mLevels.back().getCutsceneSize() > 0)
+	{
+		if(mLevels.back().getCutScene().getDialogState() == LEVEL_START_STATE)
+		{
+			mLevels.back().setLevelState(LEVEL_START_STATE);
+			mState = CUTSCENE;
+			
+		}
+	}
+	
 }
 
 void Game::setLevel(int levelNum)
 {	
+	
 	mState = SETUP;
-	std::cout << "lives: " << mLives << std::endl;
+	
 	mLevels.back().setLevelTick(SDL_GetTicks());
 	mLevels.back().setWalls(mWalls);
 	mLevels.back().setDoors(mDoors);
@@ -304,6 +373,8 @@ void Game::setLevel(int levelNum)
 	mLevels.back().setBubbles(mBubbles);
 	mLevels.back().setNeedles(mNeedles);
 	
+	
+		
 }
 
 void Game::checkPlayerWalls()
@@ -346,9 +417,12 @@ void Game::checkWin()
 	if (mBubbles.size() == 0)
 	{
 		std::cout << "passed level" << mCurrentLevel << std::endl;
-		mCurrentLevel ++;
-		addLevel(mCurrentLevel);
-
+		 
+		if(mState == PLAY)
+		{
+			mCurrentLevel ++;
+			addLevel(mCurrentLevel);
+		}
 	}
 
 }
@@ -373,3 +447,12 @@ void Game::checkLevelTime()
 
 }
 
+void Game::checkEndCutscene()
+{
+	if (mBubbles.size() == 0 && mLevels.back().getCutsceneNum() < mLevels.back().getCutsceneSize())
+	{
+		mLevels.back().setLevelState(LEVEL_END_STATE);
+		mState = CUTSCENE;
+	}
+
+}

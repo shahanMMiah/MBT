@@ -18,7 +18,7 @@ typedef enum gamesStates{
     PAUSE,
     DIED,
     SETUP,
-    CUSTCENE
+    CUTSCENE
 
     
 
@@ -35,6 +35,8 @@ class Game
         void checkWallBounce();
         void checkWin();
         void setupPlayerControls();
+        void setupPauseControls();
+        void setupCutsceneControls();
         void checkNeedleHit();
         void checkBubblePopped();
         void resizeBubbles(std::vector<Bubble>& other);
@@ -46,6 +48,8 @@ class Game
         void checkPlayerHit();
         void checkLives();
         void checkLevelTime();
+        void checkEndCutscene();
+
         
 
 
@@ -62,6 +66,7 @@ class Game
     int mLives = 3;
     GameStates_t mState;
     Dialog mPauseScreen;
+    
 
 
 

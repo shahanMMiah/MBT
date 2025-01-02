@@ -6,6 +6,7 @@
 #include <bubble.h>
 #include <needle.h>
 #include <door.h>
+#include <graphics.h>
 
 
 Level::Level(nlohmann::json &data, int levelNum)
@@ -22,7 +23,6 @@ Level::Level(nlohmann::json &data, int levelNum)
 void Level::setPlayerPos(Player &player, Wall &wall)
 {
     player.reset();
-    
     player.setSize(mLevelData[mLevel]["player"]["size"]);
     player.setMove(Vec2D(mLevelData[mLevel]["player"]["x"],mLevelData[mLevel]["player"]["y"]));
     player.groundPlayer(wall.getBoundingBox());
@@ -93,4 +93,42 @@ void Level::setNeedles(std::vector<Needle> &needles)
 	}
 }
 
+void Level::setupCutscenes()
+{
+    mCutScenes.clear();
+    for (auto custsceneData:mLevelData[mLevel]["cutscenes"])
+    {
+        
+        int width = custsceneData["width"];
+        int height = custsceneData["height"];
+        mCutScenes.push_back(
+            Dialog(
+                LEVEL_CUSTCENE, 
+                Vec2D(
+                    (int(mLevelData[mLevel]["window"]["width"])/2)-width/2,
+                    (int(mLevelData[mLevel]["window"]["height"])/2)-height/2
+                    ), 
+                width,
+                height,
+                custsceneData["state"]
+                )
+            );
+    }
+}
 
+void Level::drawCutscene(GameWindow &window)
+{
+    if(mCutScenes.size() > mCutsceneNum )
+    {
+        mCutScenes[mCutsceneNum].setOn(true);
+        mCutScenes[mCutsceneNum].draw(window);
+    }
+}
+
+void Level::updateCutscene(uint32_t delta_num)
+{
+    if(mCutScenes.size() > mCutsceneNum )
+    {
+        getCutScene().update(delta_num);
+    }
+}

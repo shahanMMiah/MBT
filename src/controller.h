@@ -26,7 +26,8 @@ class Controller
 
     bool update(uint32_t delta_time);
     inputFunction_t getKeyFunc(SDL_Keycode key);
-    void clearInputs(){mControlInputs.clear();}    
+    void clearInputs(){mControlInputs.clear();}
+        
 
     
         

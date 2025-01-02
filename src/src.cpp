@@ -10,7 +10,6 @@ int main()
 
 	Game game(window);
 	
-
 	uint32_t last_tick = SDL_GetTicks();
 	uint32_t current_tick = last_tick;
 
@@ -20,8 +19,6 @@ int main()
 
 	bool run = true;
 	
-
-
 	while (run)
 	{
 	
