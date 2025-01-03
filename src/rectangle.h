@@ -3,6 +3,8 @@
 
 #include <shape.h>
 
+struct SDL_Rect;
+
 class Rectangle: public Shape
 {
 public:
@@ -37,6 +39,10 @@ public:
 
 	static Rectangle inset(const Rectangle& rect,Vec2D &inset);
 	virtual std::vector<Vec2D> getPoints() const override;
+
+	SDL_Rect* getSDLRect();
+	SDL_Rect* getSDLRect(Vec2D pos, int width, int height);
+
 };
 
 

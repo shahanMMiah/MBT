@@ -110,7 +110,8 @@ void Level::setupCutscenes()
                     ), 
                 width,
                 height,
-                custsceneData["state"]
+                custsceneData["state"],
+               custsceneData["message"]
                 )
             );
     }

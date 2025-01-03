@@ -3,13 +3,18 @@
 
 #include <stdint.h>
 #include <vector>
+#include <string>
+
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
 
 
-class SDL_Window;
-class SDL_Surface;
+
 class Color;
 class Vec2D;
 class Line2D;
+class Rectangle;
 
 
 typedef struct Pixel_points PixelPoints_t;  
@@ -21,8 +26,11 @@ class GameWindow
         GameWindow();
         GameWindow(Color& color);
 
+        ~GameWindow();
+
         SDL_Window* init(uint32_t w, uint32_t h, uint32_t mag);
         void clear(SDL_Surface* surface);
+        void clear();
         void flip();
         void setPixel(int x, int y, Color& color);
         uint32_t getIndex(int r, int c);
@@ -31,7 +39,10 @@ class GameWindow
         
         void draw(PixelPoints_t &pixels, Color color);  
         void draw(int x, int y, Color color);
-        void draw(Line2D line, Color color); 
+        void draw(Line2D line, Color color);
+        void draw(std::string sentence, Rectangle& destSpace, Color color);
+        void draw(std::string sentence, Vec2D pos, int width, int height, Color color);
+
         void resize();
         
     
@@ -41,6 +52,11 @@ class GameWindow
         SDL_Surface* mSurface;
         SDL_Surface* mBackSurface;
         Color* mBackground;
+        
+        SDL_Renderer* mRenderer;
+        SDL_PixelFormat* mPixelFormat;
+        SDL_Texture* mTexture;
+        TTF_Font* mFont;
         
         
 };

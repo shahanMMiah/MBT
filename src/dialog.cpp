@@ -33,7 +33,7 @@ Dialog::Dialog(DialogTypes_t type, Vec2D pos, int width, int height)
     }
    
 }
-Dialog::Dialog(DialogTypes_t type, Vec2D pos, int width, int height,CutsceneLevelStates_t state)
+Dialog::Dialog(DialogTypes_t type, Vec2D pos, int width, int height,CutsceneLevelStates_t state, std::string message)
 {
     mType = type;
     mPos = pos;
@@ -45,7 +45,7 @@ Dialog::Dialog(DialogTypes_t type, Vec2D pos, int width, int height,CutsceneLeve
     mState = state;
     
     
-    mMessage = "";
+    mMessage = message;
     if (mType == LEVEL_PAUSE)
     {
         mMessage = "Game is Paused";
@@ -61,11 +61,24 @@ void Dialog::draw(GameWindow &window)
         unsigned int width = window.getBacksurface()->w;
         unsigned int height = window.getBacksurface()->h;
         Rectangle dim_rect = {Vec2D::Zero, width, height};
+        
         PixelPoints_t back_pixels = dim_rect.getFilledPixels(dim_rect.getPoints());
         window.draw(back_pixels, Color(0,0,0,150));
 
         PixelPoints_t pixels = mBoundingBox.getFilledPixels(mBoundingBox.getPoints());
         window.draw(pixels, Color::blue());
+
+        int widthOffet = mBoundingBox.getWidth()*0.5;
+        int heightOffet = mBoundingBox.getHeight()*0.25;
+        
+        window.draw(
+            mMessage, 
+            mBoundingBox.getTopLeft() + Vec2D(widthOffet/2,heightOffet/2),
+            widthOffet,
+            heightOffet,
+            Color::white()
+        );
+        
 
         for (auto &boxes: mExtraBoxes)
         {
@@ -73,8 +86,9 @@ void Dialog::draw(GameWindow &window)
             window.draw(box_pixels, Color::green());
         
         }
+        
 
-        //std::cout<< mMessage << std::endl;// TODO: add text to window 
+        
     }
 
 

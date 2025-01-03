@@ -3,6 +3,10 @@
 
 #include<vector>
 #include <nlohmann/json.hpp>
+#include <filesystem>
+
+const std::filesystem::path assetsPath = ASSETS_PATH;
+const std::filesystem::path fontPath = FONT_PATH;
 
 const int DEFAULT_WINDOW_WIDTH = 1080;
 const int DEFAULT_WINDOW_HEIGHT = 720;
@@ -32,6 +36,7 @@ const int DEFAULT_DOOR_HEIGHT = 50;
 const int DEFAULT_DIALOG_WIDTH = 500;
 const int DEFAULT_DIALOG_HEIGHT = 250;
 
+const int FONTSIZE = 200;
 
 
 typedef struct Pixel_points

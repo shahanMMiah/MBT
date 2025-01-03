@@ -24,7 +24,13 @@ class Dialog: public Object
 
     Dialog();
     Dialog(DialogTypes_t type, Vec2D pos, int width, int height);
-    Dialog(DialogTypes_t type, Vec2D pos, int width, int height,CutsceneLevelStates_t state);
+    Dialog(
+        DialogTypes_t type, 
+        Vec2D pos, 
+        int width, 
+        int height,
+        CutsceneLevelStates_t state,
+        std::string message);
     
     virtual void draw(GameWindow &window) override;
 

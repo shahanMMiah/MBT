@@ -104,16 +104,24 @@ void Game::setupCutsceneControls()
         {
             
 			mLevels.back().getCutScene().setOn(false);
-			mLevels.back().incrementCutscene();
-			
-			if (
-				mLevels.back().getCutScene().getDialogState() != mLevels.back().getLevelState() ||
-				mLevels.back().getCutsceneNum() > mLevels.back().getCutsceneSize() ||
-				mLevels.back().getCutsceneSize() == 0
-				)
+
+			if (mLevels.back().getCutsceneNum() < mLevels.back().getCutsceneSize())
 			{
-				
-				mLevels.back().setLevelState(LEVEL_PLAY_STATE);
+				mLevels.back().incrementCutscene();
+			
+				if (
+					mLevels.back().getCutScene().getDialogState() != mLevels.back().getLevelState() ||
+					mLevels.back().getCutsceneNum() >= mLevels.back().getCutsceneSize()||
+					mLevels.back().getCutsceneSize() == 0
+					)
+				{
+					mLevels.back().setLevelState(LEVEL_PLAY_STATE);
+					mState = PLAY;
+				}
+			
+			}
+			else
+			{
 				mState = PLAY;
 			}
 
@@ -182,7 +190,7 @@ bool Game:: update(uint32_t delta_time)
 
 	if (mState == PLAY)
 	{
-		std::cout<<"in olay"<<std::endl;
+
 		quit = mController.update(delta_time);
 
 		mPlayer.update();

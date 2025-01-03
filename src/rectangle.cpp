@@ -7,9 +7,10 @@
 
 
 #include <rectangle.h>
-#include<utils.h>
-#include<cmath>
+#include <utils.h>
+#include <cmath>
 #include <vector>
+#include <SDL2/SDL.h>
 
 
 Rectangle::Rectangle():Rectangle(Vec2D::Zero,Vec2D::Zero)
@@ -151,5 +152,27 @@ std::vector<Vec2D> Rectangle::getPoints() const
 
 }
 
+
+SDL_Rect* Rectangle::getSDLRect()
+{
+	SDL_Rect* rectPtr = (SDL_Rect*)malloc(sizeof(SDL_Rect));
+	rectPtr->x = int(getTopLeft().getX());
+	rectPtr->y = int(getTopLeft().getY());
+	rectPtr->w = int(getWidth());
+	rectPtr->h = int(getHeight());
+	
+	return rectPtr;
+}
+
+SDL_Rect* Rectangle::getSDLRect(Vec2D pos, int width, int height)
+{
+	SDL_Rect* rectPtr = (SDL_Rect*)malloc(sizeof(SDL_Rect));
+	rectPtr->x = int(pos.getX());
+	rectPtr->y = int(pos.getY());
+	rectPtr->w = int(width);
+	rectPtr->h = int(height);
+	
+	return rectPtr;
+}
 
 

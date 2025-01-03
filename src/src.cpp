@@ -1,12 +1,18 @@
 #include <SDL2/SDL.h>
 #include <nlohmann/json.hpp>
 #include<game.h>
+#include <filesystem>
 
 int main()
 {
 
+
+	std::cout << "Assets path: " << assetsPath << std::endl;
+	std::cout << "Font path: " << fontPath << std::endl;
+
 	GameWindow window;
 	window.init(1080,720,1);
+
 
 	Game game(window);
 	
