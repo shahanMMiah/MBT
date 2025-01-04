@@ -209,34 +209,35 @@ void GameWindow:: draw(Line2D line, const Color color)
 
 }
 
+void GameWindow::draw(SDL_Surface* surface, SDL_Rect* src_rect,SDL_Rect* trg_rect)
+{
+    
+    surface = SDL_ConvertSurface(surface, mPixelFormat, 0);
+    SDL_BlitScaled(surface,src_rect,mBackSurface, trg_rect);
+
+    if (src_rect != nullptr)
+    {
+        free(src_rect);
+    }
+    if (trg_rect != nullptr)
+    {
+        free(trg_rect);
+    }
+
+    SDL_FreeSurface(surface);
+
+
+}
+
 void GameWindow::draw(std::string sentence, Rectangle&  destSpace,Color color)
 {
     
     SDL_Color textColor = {color.getRed(),color.getBlue(),color.getGreen()};
     SDL_Surface* textSurface = TTF_RenderText_Solid( mFont, sentence.c_str(),textColor);
-    
-    if (textSurface == NULL)
-    {
-        printf("Failed to create text surface! SDL_ttf Error: %s\n", TTF_GetError());
-        
-    } 
-      
     SDL_Rect* ownRectPtr = destSpace.getSDLRect();
-    
-    if(textSurface->format->format != mPixelFormat->format)
-    {
-        printf("mismatch surface formats! SDL_ttf Error: %d - %d\n",textSurface->format->format,mPixelFormat->format );
-        
-        textSurface = SDL_ConvertSurface(textSurface, mPixelFormat, 0);
-    }
-
-    if (SDL_BlitScaled(textSurface,nullptr,mBackSurface, ownRectPtr) < 0 );
-    {
-        printf("failed to blit text surface! SDL_ttf Error: %s\n", TTF_GetError());
-        
-    } 
-    free(ownRectPtr);
-
+    draw(textSurface,nullptr, ownRectPtr);
+    textSurface = nullptr;
+    ownRectPtr = nullptr;
 
 }
 
@@ -244,21 +245,29 @@ void GameWindow::draw(std::string sentence, Vec2D pos, int width, int height, Co
 {
     SDL_Color textColor = {color.getRed(),color.getBlue(),color.getGreen()};
     SDL_Surface* textSurface = TTF_RenderText_Solid( mFont, sentence.c_str(),textColor);
-    
-    if (textSurface == NULL)
-    {
-        printf("Failed to create text surface! SDL_ttf Error: %s\n", TTF_GetError());
-        
-    }
-
     SDL_Rect* ownRectPtr = Rectangle(pos,width,height).getSDLRect();
 
-    textSurface = SDL_ConvertSurface(textSurface, mPixelFormat, 0);
-    SDL_BlitScaled(textSurface,nullptr,mBackSurface, ownRectPtr);
-
-    free(ownRectPtr);
+    draw(textSurface,nullptr, ownRectPtr);
+    textSurface = nullptr;
+    ownRectPtr = nullptr;
+    
 
 }
+
+void GameWindow::draw(std::filesystem::path img, Rectangle& srcSpace, Rectangle& destSpace)
+{
+    SDL_Surface * imgSurface = IMG_Load(img.c_str());
+    SDL_Rect* src_rect = srcSpace.getSDLRect();
+    SDL_Rect* dst_rect = destSpace.getSDLRect();
+
+    draw(imgSurface, src_rect, dst_rect);
+
+    imgSurface = nullptr;
+    src_rect = nullptr;
+    dst_rect = nullptr;
+
+}
+        
 
 void GameWindow::resize()
 {

@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <vector>
 #include <string>
+#include <filesystem>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
@@ -40,8 +41,15 @@ class GameWindow
         void draw(PixelPoints_t &pixels, Color color);  
         void draw(int x, int y, Color color);
         void draw(Line2D line, Color color);
+        
         void draw(std::string sentence, Rectangle& destSpace, Color color);
         void draw(std::string sentence, Vec2D pos, int width, int height, Color color);
+        
+        
+        void draw(SDL_Surface* surface, SDL_Rect* src_rect,SDL_Rect* trg_rect);
+        
+        void draw(std::filesystem::path img, Rectangle& srcSpace, Rectangle& destSpace);
+        
 
         void resize();
         

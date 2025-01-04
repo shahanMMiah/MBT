@@ -7,6 +7,9 @@
 
 const std::filesystem::path assetsPath = ASSETS_PATH;
 const std::filesystem::path fontPath = FONT_PATH;
+const std::filesystem::path princessSpritePath = PRINCESS_SPRITE_PATH;
+
+
 
 const int DEFAULT_WINDOW_WIDTH = 1080;
 const int DEFAULT_WINDOW_HEIGHT = 720;
@@ -16,7 +19,7 @@ const float GRAVITY = 9.8f;
 const float TIMESTEP = 0.25f;
 const float TIMESTEP2 = TIMESTEP*TIMESTEP;
 
-const int DEFAULT_PLAYER_SIZE = 30;
+const int DEFAULT_PLAYER_SIZE = 60;
 
 const int DEFAULT_NEEDLE_AMOUNT = 2;
 const int DEFAULT_NEEDLE_WIDTH = 2;

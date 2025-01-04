@@ -50,6 +50,11 @@ void Player:: draw(GameWindow &window)
     PixelPoints_t pixels = mBoundingBox.getFilledPixels(mBoundingBox.getPoints());
     window.draw(pixels, Color::green());
     window.draw(mPos.getX(),mPos.getY(), Color::red());
+
+    Rectangle srcRect = Rectangle(Vec2D(250,230), 100,120);
+
+    window.draw(PRINCESS_SPRITE_PATH, srcRect, mBoundingBox);
+
     
 }
 
@@ -93,9 +98,7 @@ void Player::update()
 
 void Player::moveFromBottom(Vec2D pos)
 {
-    
     mDirection = pos - getBottomMid();
-   //move();
 }
 
 size_t Player::shoot(std::vector<Needle>& needles)
@@ -105,7 +108,7 @@ size_t Player::shoot(std::vector<Needle>& needles)
        
         if (needles[iter].getLoaded())
         {   
-            needles[iter].setPos(getBottomMid()+Vec2D(30,-10));
+            needles[iter].setPos(getBottomMid()+Vec2D(mWidth,-10));
             needles[iter].shoot();
             return iter;
         }

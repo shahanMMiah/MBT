@@ -132,9 +132,6 @@ void Game::setupCutsceneControls()
 		mLevels.back().getCutScene().getController().mControlInputs.push_back(ok);
 }
 
-
-
-
 void Game:: draw(GameWindow& window ,uint32_t delta_time)
 {
 	//window.resize();
@@ -144,7 +141,7 @@ void Game:: draw(GameWindow& window ,uint32_t delta_time)
 	}
 	else if(mState == PLAY || mState == PAUSE || mState == CUTSCENE)
 	{
-			mPlayer.draw(window);
+			
 			
 			for (auto &door : mDoors)
 			{
@@ -166,6 +163,7 @@ void Game:: draw(GameWindow& window ,uint32_t delta_time)
 			{
 				needle.draw(window);
 			}
+
 		
 		if(mState == PAUSE)
 			{
@@ -179,6 +177,8 @@ void Game:: draw(GameWindow& window ,uint32_t delta_time)
 					mLevels.back().drawCutscene(window);
 				}			
 			}
+
+		mPlayer.draw(window);
 		window.flip();
 	}	
 	
